@@ -17,21 +17,29 @@
             <ul class="nav-menu">
                 <li><a href="${pageContext.request.contextPath}/dashboard">Dashboard</a></li>
 
-                <%-- Sales menu - Available for all roles --%>
-                <li><a href="${pageContext.request.contextPath}/sales">Sales</a></li>
-
-                <%-- Inventory menu - Available for MANAGER and ADMIN --%>
-                <c:if test="${sessionScope.userRole == 'MANAGER' || sessionScope.userRole == 'ADMIN'}">
-                    <li><a href="${pageContext.request.contextPath}/inventory">Inventory</a></li>
+                <%-- CUSTOMER: Only Products --%>
+                <c:if test="${sessionScope.userRole == 'CUSTOMER'}">
+                    <li><a href="${pageContext.request.contextPath}/products">Products</a></li>
                 </c:if>
 
-                <%-- Reports menu - Available for MANAGER and ADMIN --%>
-                <c:if test="${sessionScope.userRole == 'MANAGER' || sessionScope.userRole == 'ADMIN'}">
+                <%-- CASHIER: Sales and Reports only --%>
+                <c:if test="${sessionScope.userRole == 'CASHIER'}">
+                    <li><a href="${pageContext.request.contextPath}/sales">Sales</a></li>
                     <li><a href="${pageContext.request.contextPath}/reports">Reports</a></li>
                 </c:if>
 
-                <%-- User Management - Available for ADMIN only --%>
+                <%-- MANAGER: All except User Management --%>
+                <c:if test="${sessionScope.userRole == 'MANAGER'}">
+                    <li><a href="${pageContext.request.contextPath}/sales">Sales</a></li>
+                    <li><a href="${pageContext.request.contextPath}/inventory">Inventory</a></li>
+                    <li><a href="${pageContext.request.contextPath}/reports">Reports</a></li>
+                </c:if>
+
+                <%-- ADMIN: Full Access --%>
                 <c:if test="${sessionScope.userRole == 'ADMIN'}">
+                    <li><a href="${pageContext.request.contextPath}/sales">Sales</a></li>
+                    <li><a href="${pageContext.request.contextPath}/inventory">Inventory</a></li>
+                    <li><a href="${pageContext.request.contextPath}/reports">Reports</a></li>
                     <li><a href="${pageContext.request.contextPath}/users">Users</a></li>
                 </c:if>
             </ul>

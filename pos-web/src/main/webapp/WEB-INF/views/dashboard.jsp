@@ -13,17 +13,46 @@
     <div class="quick-actions">
         <h2>Quick Actions</h2>
         <div class="action-buttons">
-            <a href="${pageContext.request.contextPath}/sales/new" class="action-btn">
-                <span class="action-icon">💳</span>
-                <span>New Sale</span>
-            </a>
-            <a href="${pageContext.request.contextPath}/sales/list" class="action-btn">
-                <span class="action-icon">🧾</span>
-                <span>View Bills</span>
-            </a>
-            <c:if test="${sessionScope.userRole == 'MANAGER' || sessionScope.userRole == 'ADMIN'}">
-                <a href="${pageContext.request.contextPath}/inventory/add" class="action-btn">
+            <%-- CUSTOMER: Only view products --%>
+            <c:if test="${sessionScope.userRole == 'CUSTOMER'}">
+                <a href="${pageContext.request.contextPath}/products" class="action-btn">
+                    <span class="action-icon">🛒</span>
+                    <span>View Products</span>
+                </a>
+            </c:if>
+
+            <%-- CASHIER: Sales and Reports only --%>
+            <c:if test="${sessionScope.userRole == 'CASHIER'}">
+                <a href="${pageContext.request.contextPath}/sales/new" class="action-btn">
+                    <span class="action-icon">💳</span>
+                    <span>New Sale</span>
+                </a>
+                <a href="${pageContext.request.contextPath}/sales/list" class="action-btn">
+                    <span class="action-icon">🧾</span>
+                    <span>View Bills</span>
+                </a>
+                <a href="${pageContext.request.contextPath}/reports" class="action-btn">
+                    <span class="action-icon">📊</span>
+                    <span>Reports</span>
+                </a>
+            </c:if>
+
+            <%-- MANAGER: Everything except user management --%>
+            <c:if test="${sessionScope.userRole == 'MANAGER'}">
+                <a href="${pageContext.request.contextPath}/sales/new" class="action-btn">
+                    <span class="action-icon">💳</span>
+                    <span>New Sale</span>
+                </a>
+                <a href="${pageContext.request.contextPath}/sales/list" class="action-btn">
+                    <span class="action-icon">🧾</span>
+                    <span>View Bills</span>
+                </a>
+                <a href="${pageContext.request.contextPath}/inventory" class="action-btn">
                     <span class="action-icon">📦</span>
+                    <span>Inventory</span>
+                </a>
+                <a href="${pageContext.request.contextPath}/inventory/add" class="action-btn">
+                    <span class="action-icon">➕</span>
                     <span>Add Stock</span>
                 </a>
                 <a href="${pageContext.request.contextPath}/reports" class="action-btn">
@@ -31,7 +60,33 @@
                     <span>Reports</span>
                 </a>
             </c:if>
+
+            <%-- ADMIN: Full access including user management --%>
             <c:if test="${sessionScope.userRole == 'ADMIN'}">
+                <a href="${pageContext.request.contextPath}/sales/new" class="action-btn">
+                    <span class="action-icon">💳</span>
+                    <span>New Sale</span>
+                </a>
+                <a href="${pageContext.request.contextPath}/sales/list" class="action-btn">
+                    <span class="action-icon">🧾</span>
+                    <span>View Bills</span>
+                </a>
+                <a href="${pageContext.request.contextPath}/inventory" class="action-btn">
+                    <span class="action-icon">📦</span>
+                    <span>Inventory</span>
+                </a>
+                <a href="${pageContext.request.contextPath}/inventory/add" class="action-btn">
+                    <span class="action-icon">➕</span>
+                    <span>Add Stock</span>
+                </a>
+                <a href="${pageContext.request.contextPath}/reports" class="action-btn">
+                    <span class="action-icon">📊</span>
+                    <span>Reports</span>
+                </a>
+                <a href="${pageContext.request.contextPath}/users" class="action-btn">
+                    <span class="action-icon">👥</span>
+                    <span>Manage Users</span>
+                </a>
                 <a href="${pageContext.request.contextPath}/users/register" class="action-btn">
                     <span class="action-icon">👤</span>
                     <span>Register User</span>
@@ -40,6 +95,8 @@
         </div>
     </div>
 
+    <%-- Stats section (not for CUSTOMER) --%>
+    <c:if test="${sessionScope.userRole != 'CUSTOMER'}">
     <div class="dashboard-stats">
         <div class="stat-card">
             <h3>Today's Revenue</h3>
@@ -81,7 +138,7 @@
                     <c:if test="${status.index < 10}">
                         <tr>
                             <td>#${bill.billNumber.value}</td>
-                            <td><fmt:formatDate value="${bill.billDate}" pattern="HH:mm:ss"/></td>
+                            <td>${bill.billDate}</td>
                             <td class="price">$<fmt:formatNumber value="${bill.totalAmount.value}" pattern="#,##0.00"/></td>
                             <td><span class="badge badge-${bill.transactionType}">${bill.transactionType}</span></td>
                             <td>
@@ -99,6 +156,15 @@
             </tbody>
         </table>
     </div>
+    </c:if>
+
+    <%-- Customer view: Show available products --%>
+    <c:if test="${sessionScope.userRole == 'CUSTOMER'}">
+        <div class="dashboard-section">
+            <h2>Available Products</h2>
+            <p>View our available items in the <a href="${pageContext.request.contextPath}/products">Products</a> section.</p>
+        </div>
+    </c:if>
 
     <c:if test="${sessionScope.userRole == 'MANAGER' || sessionScope.userRole == 'ADMIN'}">
         <div class="dashboard-section">

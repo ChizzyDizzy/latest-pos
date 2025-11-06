@@ -47,8 +47,9 @@
                 <label for="role">User Role *</label>
                 <select id="role" name="role" required>
                     <option value="">Select Role</option>
-                    <option value="CASHIER">Cashier - Can create sales and view bills</option>
-                    <option value="MANAGER">Manager - Cashier + Inventory & Reports</option>
+                    <option value="CUSTOMER">Customer - View products only</option>
+                    <option value="CASHIER">Cashier - Create sales and view reports</option>
+                    <option value="MANAGER">Manager - Sales, Inventory & Reports</option>
                     <option value="ADMIN">Admin - Full system access</option>
                 </select>
             </div>

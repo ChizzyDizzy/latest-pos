@@ -2,10 +2,12 @@
 -- admin password: admin123
 -- cashier1 password: cashier123
 -- manager1 password: manager123
+-- customer1 password: customer123
 INSERT INTO users (username, email, password_hash, role) VALUES
                                                              ('admin', 'admin@syos.com', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'ADMIN'),
                                                              ('cashier1', 'cashier1@syos.com', '56f9a591bd64e713d87b1bb4e87062ad9b19080ad003b2cd8cdfcb9c3ab9da7b', 'CASHIER'),
-                                                             ('manager1', 'manager1@syos.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'MANAGER');
+                                                             ('manager1', 'manager1@syos.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'MANAGER'),
+                                                             ('customer1', 'customer1@syos.com', '6ed0b4dcab61c966e7f5aea5a9ea4c2cfbf28c41e5c7e0daaa29de2d5dafee11', 'CUSTOMER');
 
 -- Insert sample items
 INSERT INTO items (code, name, price, quantity, state, purchase_date, expiry_date) VALUES
