@@ -50,13 +50,10 @@ public class LoginServlet extends HttpServlet {
         logger.info("Login attempt for user: {}", username);
 
         try {
-            // Find user by username (using correct method name)
-            User user = userService.findByUsername(username);
+            // Authenticate user with password verification
+            User user = userService.authenticate(username, password);
 
             if (user != null) {
-                // TODO: Add password verification here
-                // For now, we'll just check if user exists
-
                 // Create new session for authenticated user
                 HttpSession session = request.getSession(true);
                 session.setAttribute("user", user);
@@ -65,7 +62,7 @@ public class LoginServlet extends HttpServlet {
                 session.setAttribute("userRole", user.getRole().name());
                 session.setMaxInactiveInterval(30 * 60);
 
-                logger.info("User {} logged in successfully", username);
+                logger.info("User {} logged in successfully with role {}", username, user.getRole());
 
                 String redirectUrl = (String) session.getAttribute("redirectAfterLogin");
                 if (redirectUrl != null && !redirectUrl.isEmpty()) {
