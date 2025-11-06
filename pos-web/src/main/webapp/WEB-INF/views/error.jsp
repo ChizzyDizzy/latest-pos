@@ -18,7 +18,7 @@
         <c:if test="${not empty exception}">
             <div class="error-details">
                 <h3>Error Details:</h3>
-                <p><strong>Type:</strong> ${exception.class.name}</p>
+                <p><strong>Type:</strong> ${exception['class'].name}</p>
                 <p><strong>Message:</strong> ${exception.message}</p>
             </div>
         </c:if>

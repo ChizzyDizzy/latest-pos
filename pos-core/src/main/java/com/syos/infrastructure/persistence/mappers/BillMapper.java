@@ -30,7 +30,8 @@ public class BillMapper {
                 .withTransactionType(TransactionType.valueOf(rs.getString("transaction_type")));
 
         // Note: Items will be added separately when joining with bill_items table
-        return builder.build();
+        // Use buildForDatabaseLoading() to allow items to be added after creation
+        return builder.buildForDatabaseLoading();
     }
 
     /**

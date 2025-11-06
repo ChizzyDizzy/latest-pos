@@ -1,8 +1,11 @@
--- Insert default admin user (password: admin123)
+-- Insert default users with SHA-256 hashed passwords
+-- admin password: admin123
+-- cashier1 password: cashier123
+-- manager1 password: manager123
 INSERT INTO users (username, email, password_hash, role) VALUES
-                                                             ('admin', 'admin@syos.com', 'sha256_hash_of_admin123', 'ADMIN'),
-                                                             ('cashier1', 'cashier1@syos.com', 'sha256_hash_of_cashier123', 'CASHIER'),
-                                                             ('manager1', 'manager1@syos.com', 'manager1', 'MANAGER');
+                                                             ('admin', 'admin@syos.com', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'ADMIN'),
+                                                             ('cashier1', 'cashier1@syos.com', '56f9a591bd64e713d87b1bb4e87062ad9b19080ad003b2cd8cdfcb9c3ab9da7b', 'CASHIER'),
+                                                             ('manager1', 'manager1@syos.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'MANAGER');
 
 -- Insert sample items
 INSERT INTO items (code, name, price, quantity, state, purchase_date, expiry_date) VALUES

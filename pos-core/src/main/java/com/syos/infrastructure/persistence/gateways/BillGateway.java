@@ -69,6 +69,7 @@ public class BillGateway extends OracleDatabaseGateway<Bill> {
         return new Bill.Builder()
                 .withBillNumber(id.intValue())
                 .withDate(bill.getBillDate())
+                .withItems(bill.getItems())
                 .withDiscount(bill.getDiscount().getValue())
                 .withCashTendered(bill.getCashTendered().getValue())
                 .withTransactionType(bill.getTransactionType())

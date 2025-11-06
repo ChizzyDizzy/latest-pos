@@ -34,11 +34,11 @@
                         <td><strong>${user.username}</strong></td>
                         <td>${user.email}</td>
                         <td><span class="role-badge role-${user.role}">${user.role}</span></td>
-                        <td><fmt:formatDate value="${user.createdAt}" pattern="MMM dd, yyyy HH:mm"/></td>
+                        <td>${user.createdAt}</td>
                         <td>
                             <c:choose>
                                 <c:when test="${user.lastLoginAt != null}">
-                                    <fmt:formatDate value="${user.lastLoginAt}" pattern="MMM dd, yyyy HH:mm"/>
+                                    ${user.lastLoginAt}
                                 </c:when>
                                 <c:otherwise>
                                     <span class="text-muted">Never</span>

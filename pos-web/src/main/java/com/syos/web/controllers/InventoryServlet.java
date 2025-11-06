@@ -154,6 +154,18 @@ public class InventoryServlet extends HttpServlet {
         try {
             List<Item> expiringItems = inventoryService.getExpiringItems();
             request.setAttribute("items", expiringItems);
+
+            // Calculate days until expiry for each item
+            Map<String, Long> daysUntilExpiryMap = new HashMap<>();
+            LocalDate today = LocalDate.now();
+            for (Item item : expiringItems) {
+                if (item.getExpiryDate() != null) {
+                    long daysUntilExpiry = java.time.temporal.ChronoUnit.DAYS.between(today, item.getExpiryDate());
+                    daysUntilExpiryMap.put(item.getCode().getValue(), daysUntilExpiry);
+                }
+            }
+            request.setAttribute("daysUntilExpiryMap", daysUntilExpiryMap);
+
             request.getRequestDispatcher("/WEB-INF/views/inventory/expiring.jsp").forward(request, response);
         } catch (Exception e) {
             logger.error("Error loading expiring items", e);
