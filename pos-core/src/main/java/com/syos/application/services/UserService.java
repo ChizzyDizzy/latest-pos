@@ -1,0 +1,156 @@
+package com.syos.application.services;
+
+import com.syos.domain.entities.User;
+import com.syos.domain.valueobjects.UserId;
+import com.syos.domain.valueobjects.UserRole;
+import com.syos.domain.exceptions.UserAlreadyExistsException;
+import com.syos.infrastructure.persistence.gateways.UserGateway;
+import com.syos.shared.utils.PasswordHashGenerator;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+/**
+ * Application Service for User Management
+ * Handles user-related business logic and authentication
+ */
+public class UserService {
+    private final UserGateway userGateway;
+    private User currentUser;
+
+    public UserService(UserGateway userGateway) {
+        this.userGateway = userGateway;
+    }
+
+    /**
+     * Register a new user in the system
+     */
+    public User registerUser(String username, String email, String password, UserRole role) {
+        // Check if username already exists (using findByUsername instead)
+        if (userGateway.findByUsername(username) != null) {
+            throw new UserAlreadyExistsException("Username '" + username + "' is already taken");
+        }
+
+        // Hash the password
+        String passwordHash = PasswordHashGenerator.hashPassword(password);
+
+        // Create new user
+        User newUser = new User(
+                new UserId(0L), // ID will be auto-generated
+                username,
+                email,
+                passwordHash,
+                role,
+                LocalDateTime.now(),
+                null
+        );
+
+        // Save to database
+        userGateway.insert(newUser);
+
+        return newUser;
+    }
+
+    /**
+     * Authenticate user with username and password
+     * @param username The username
+     * @param password The plain text password
+     * @return User object if authentication successful, null otherwise
+     */
+    public User authenticate(String username, String password) {
+        User user = userGateway.findByUsername(username);
+        if (user == null) {
+            return null;
+        }
+
+        // Hash the provided password and compare
+        String hashedPassword = PasswordHashGenerator.hashPassword(password);
+        if (user.getPasswordHash().equals(hashedPassword)) {
+            this.currentUser = user;
+            return user;
+        }
+
+        return null;
+    }
+
+    /**
+     * Find user by username
+     * @param username The username to search for
+     * @return User if found, null otherwise
+     */
+    public User findByUsername(String username) {
+        return userGateway.findByUsername(username);
+    }
+
+    /**
+     * Login user (sets current user)
+     */
+    public boolean login(String username, String password) {
+        User user = authenticate(username, password);
+        if (user != null) {
+            this.currentUser = user;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Logout current user
+     */
+    public void logout() {
+        this.currentUser = null;
+    }
+
+    /**
+     * Get current logged-in user
+     */
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    /**
+     * Check if a user is currently logged in
+     */
+    public boolean isLoggedIn() {
+        return currentUser != null;
+    }
+
+    /**
+     * Check if current user has a specific role
+     * @param role The role to check
+     * @return true if current user has the role, false otherwise
+     */
+    public boolean hasRole(UserRole role) {
+        if (currentUser == null) {
+            return false;
+        }
+        return currentUser.getRole() == role;
+    }
+
+    /**
+     * Get all users in the system
+     */
+    public List<User> getAllUsers() {
+        return userGateway.findAll();
+    }
+
+    /**
+     * Check if username exists
+     */
+    public boolean usernameExists(String username) {
+        return userGateway.findByUsername(username) != null;
+    }
+
+    /**
+     * Update last login timestamp for user
+     * @param userId The user ID
+     */
+    public void updateLastLogin(UserId userId) {
+        User user = userGateway.findById(userId.getValue());
+        if (user != null) {
+            // Note: This is a simple implementation
+            // In production, you'd update the database record
+            System.out.println("User " + user.getUsername() + " logged in at " + LocalDateTime.now());
+        }
+    }
+}
