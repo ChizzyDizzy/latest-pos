@@ -16,9 +16,24 @@
             </div>
             <ul class="nav-menu">
                 <li><a href="${pageContext.request.contextPath}/dashboard">Dashboard</a></li>
-                <li><a href="${pageContext.request.contextPath}/sales/new">Sales</a></li>
-                <li><a href="${pageContext.request.contextPath}/inventory">Inventory</a></li>
-                <li><a href="${pageContext.request.contextPath}/reports">Reports</a></li>
+
+                <%-- Sales menu - Available for all roles --%>
+                <li><a href="${pageContext.request.contextPath}/sales">Sales</a></li>
+
+                <%-- Inventory menu - Available for MANAGER and ADMIN --%>
+                <c:if test="${sessionScope.userRole == 'MANAGER' || sessionScope.userRole == 'ADMIN'}">
+                    <li><a href="${pageContext.request.contextPath}/inventory">Inventory</a></li>
+                </c:if>
+
+                <%-- Reports menu - Available for MANAGER and ADMIN --%>
+                <c:if test="${sessionScope.userRole == 'MANAGER' || sessionScope.userRole == 'ADMIN'}">
+                    <li><a href="${pageContext.request.contextPath}/reports">Reports</a></li>
+                </c:if>
+
+                <%-- User Management - Available for ADMIN only --%>
+                <c:if test="${sessionScope.userRole == 'ADMIN'}">
+                    <li><a href="${pageContext.request.contextPath}/users">Users</a></li>
+                </c:if>
             </ul>
             <div class="nav-user">
                 <span>Welcome, <strong>${sessionScope.username}</strong> (${sessionScope.userRole})</span>
