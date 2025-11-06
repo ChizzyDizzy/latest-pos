@@ -1,4 +1,4 @@
-package com.syos.infrastructure.ui.presenters;
+package com.syos.cli.ui.presenters;
 
 /**
  * Presenter for report-related UI operations

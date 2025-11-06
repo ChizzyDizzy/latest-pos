@@ -1,4 +1,4 @@
-package com.syos.infrastructure.ui.menu;
+package com.syos.cli.ui.menu;
 
 import java.util.*;
 

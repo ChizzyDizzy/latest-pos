@@ -2,8 +2,8 @@ package com.syos.application.commands.user;
 
 import com.syos.application.interfaces.Command;
 import com.syos.application.services.UserService;
-import com.syos.infrastructure.ui.presenters.UserPresenter;
-import com.syos.infrastructure.ui.cli.InputReader;
+import com.syos.cli.ui.presenters.UserPresenter;
+import com.syos.cli.ui.cli.InputReader;
 import com.syos.domain.valueobjects.UserRole;
 import com.syos.domain.exceptions.UserAlreadyExistsException;
 
@@ -119,9 +119,10 @@ public class RegisterUserCommand implements Command {
         System.out.println("1. Cashier");
         System.out.println("2. Manager");
         System.out.println("3. Admin");
+        System.out.println("4. Customer");
 
         while (true) {
-            int choice = inputReader.readInt("Enter choice (1-3): ");
+            int choice = inputReader.readInt("Enter choice (1-4): ");
 
             switch (choice) {
                 case 1:
@@ -130,8 +131,10 @@ public class RegisterUserCommand implements Command {
                     return UserRole.MANAGER;
                 case 3:
                     return UserRole.ADMIN;
+                case 4:
+                    return UserRole.CUSTOMER;
                 default:
-                    presenter.showError("Invalid choice. Please select 1-3.");
+                    presenter.showError("Invalid choice. Please select 1-4.");
             }
         }
     }

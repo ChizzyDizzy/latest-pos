@@ -1,6 +1,6 @@
-package com.syos.infrastructure.ui.menu;
+package com.syos.cli.ui.menu;
 
-import com.syos.infrastructure.factories.CommandFactory;
+import com.syos.cli.factories.CommandFactory;
 
 public class MenuBuilder {
     private final CommandFactory commandFactory;

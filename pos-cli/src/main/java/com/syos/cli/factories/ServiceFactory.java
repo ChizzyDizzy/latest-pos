@@ -1,4 +1,4 @@
-package com.syos.infrastructure.factories;
+package com.syos.cli.factories;
 
 import com.syos.application.services.*;
 import com.syos.infrastructure.persistence.gateways.*;

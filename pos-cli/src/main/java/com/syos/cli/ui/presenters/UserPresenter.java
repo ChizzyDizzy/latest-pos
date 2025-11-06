@@ -1,4 +1,4 @@
-package com.syos.infrastructure.ui.presenters;
+package com.syos.cli.ui.presenters;
 
 import com.syos.domain.entities.User;
 
