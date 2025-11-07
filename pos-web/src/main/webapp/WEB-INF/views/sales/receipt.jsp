@@ -64,7 +64,7 @@
                 <div class="receipt-divider">- - - - - - - - - - - - - - - -</div>
                 <div class="total-row grand-total">
                     <span>TOTAL:</span>
-                    <span>$<fmt:formatNumber value="${bill.totalAmount.value}" pattern="#,##0.00"/></span>
+                    <span>$<fmt:formatNumber value="${bill.finalAmount.value}" pattern="#,##0.00"/></span>
                 </div>
                 <div class="receipt-divider">================================</div>
                 <div class="total-row">
