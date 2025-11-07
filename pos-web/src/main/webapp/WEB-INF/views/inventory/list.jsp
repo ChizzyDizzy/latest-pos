@@ -59,9 +59,9 @@
                         <td>
                             <span class="state-badge state-${item.state.stateName}">${item.state.stateName}</span>
                         </td>
-                        <td><fmt:formatDate value="${item.purchaseDate}" pattern="MMM dd, yyyy"/></td>
+                        <td>${item.purchaseDate}</td>
                         <td>
-                            <fmt:formatDate value="${item.expiryDate}" pattern="MMM dd, yyyy"/>
+                            ${item.expiryDate}
                             <c:if test="${item.expired}">
                                 <span class="expired-label">EXPIRED</span>
                             </c:if>

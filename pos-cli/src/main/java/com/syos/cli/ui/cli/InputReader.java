@@ -1,4 +1,4 @@
-package com.syos.infrastructure.ui.cli;
+package com.syos.cli.ui.cli;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

@@ -25,10 +25,10 @@ public class Bill implements BillInterface {
     // Private constructor - use Builder
     private Bill(BillNumber billNumber, LocalDateTime billDate, List<BillItem> items,
                  Money totalAmount, Money discount, Money cashTendered, Money change,
-                 TransactionType transactionType) {
+                 TransactionType transactionType, boolean mutable) {
         this.billNumber = billNumber;
         this.billDate = billDate;
-        this.items = Collections.unmodifiableList(items);
+        this.items = mutable ? items : Collections.unmodifiableList(items);
         this.totalAmount = totalAmount;
         this.discount = discount;
         this.cashTendered = cashTendered;
@@ -98,7 +98,30 @@ public class Bill implements BillInterface {
             }
 
             return new Bill(billNumber, billDate, items, total, discount,
-                    cashTendered, change, transactionType);
+                    cashTendered, change, transactionType, false);
+        }
+
+        /**
+         * Build a Bill for database loading purposes.
+         * This method skips validation and creates a mutable bill that can have items added later.
+         * Use this ONLY when loading from database where items will be added after initial creation.
+         */
+        public Bill buildForDatabaseLoading() {
+            if (billNumber == null) {
+                throw new IllegalStateException("Bill number is required");
+            }
+
+            // Calculate totals based on current items (may be empty initially)
+            Money total = items.isEmpty() ? new Money(BigDecimal.ZERO) : calculateTotal();
+            Money finalAmount = total.subtract(discount);
+
+            // Use provided cash tendered or zero if not set yet
+            Money cash = cashTendered != null ? cashTendered : new Money(BigDecimal.ZERO);
+            Money change = cash.subtract(finalAmount);
+
+            // Return mutable bill that allows items to be added
+            return new Bill(billNumber, billDate, new ArrayList<>(items), total, discount,
+                    cash, change, transactionType, true);
         }
 
         private void validateBill() {

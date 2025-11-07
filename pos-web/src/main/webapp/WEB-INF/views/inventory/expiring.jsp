@@ -37,16 +37,15 @@
                         <td class="price">$<fmt:formatNumber value="${item.price.value}" pattern="#,##0.00"/></td>
                         <td><span class="state-badge state-${item.state.stateName}">${item.state.stateName}</span></td>
                         <td>
-                            <fmt:formatDate value="${item.expiryDate}" pattern="MMM dd, yyyy"/>
+                            ${item.expiryDate}
                             <c:if test="${item.expired}">
                                 <span class="expired-label">EXPIRED</span>
                             </c:if>
                         </td>
                         <td class="text-center">
-                            <jsp:useBean id="now" class="java.util.Date"/>
-                            <c:set var="daysUntilExpiry" value="${(item.expiryDate.time - now.time) / (1000 * 60 * 60 * 24)}"/>
+                            <c:set var="daysUntilExpiry" value="${daysUntilExpiryMap[item.code.value]}"/>
                             <span class="days-badge ${daysUntilExpiry <= 0 ? 'expired' : (daysUntilExpiry <= 3 ? 'critical' : 'warning')}">
-                                <fmt:formatNumber value="${daysUntilExpiry}" maxFractionDigits="0"/> days
+                                ${daysUntilExpiry} days
                             </span>
                         </td>
                     </tr>

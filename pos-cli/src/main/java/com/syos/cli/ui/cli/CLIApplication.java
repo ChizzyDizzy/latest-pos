@@ -1,8 +1,8 @@
 package com.syos.cli.ui.cli;
 
-import com.syos.infrastructure.ui.menu.*;
+import com.syos.cli.ui.menu.*;
 import com.syos.application.interfaces.Command;
-import com.syos.infrastructure.factories.CommandFactory;
+import com.syos.cli.factories.CommandFactory;
 import java.util.Scanner;
 
 public class CLIApplication {
@@ -30,7 +30,7 @@ public class CLIApplication {
                 processMenuChoice(mainMenu, choice);
 
             } catch (Exception e) {
-                System.err.println("Error:asdads " + e.getMessage());
+                System.err.println("Error: " + e.getMessage());
             }
         }
 

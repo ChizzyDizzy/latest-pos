@@ -1,6 +1,6 @@
-package com.syos.infrastructure.factories;
+package com.syos.cli.factories;
 
-import com.syos.infrastructure.ui.presenters.*;
+import com.syos.cli.ui.presenters.*;
 
 public class PresenterFactory {
     private static PresenterFactory instance;

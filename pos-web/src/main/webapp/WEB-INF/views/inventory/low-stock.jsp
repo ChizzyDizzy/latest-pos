@@ -38,7 +38,7 @@
                         </td>
                         <td class="price">$<fmt:formatNumber value="${item.price.value}" pattern="#,##0.00"/></td>
                         <td><span class="state-badge state-${item.state.stateName}">${item.state.stateName}</span></td>
-                        <td><fmt:formatDate value="${item.expiryDate}" pattern="MMM dd, yyyy"/></td>
+                        <td>${item.expiryDate}</td>
                         <td>
                             <a href="${pageContext.request.contextPath}/inventory/add" class="btn btn-sm btn-primary">
                                 Reorder

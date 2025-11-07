@@ -1,4 +1,4 @@
-package com.syos.infrastructure.factories;
+package com.syos.cli.factories;
 
 import com.syos.application.interfaces.Command;
 import com.syos.application.commands.*;
@@ -6,7 +6,7 @@ import com.syos.application.commands.sales.*;
 import com.syos.application.commands.inventory.*;
 import com.syos.application.commands.reports.*;
 import com.syos.application.commands.user.*;
-import com.syos.infrastructure.ui.cli.InputReader;
+import com.syos.cli.ui.cli.InputReader;
 
 /**
  * Factory Method Pattern - Creates commands with dependencies injected
