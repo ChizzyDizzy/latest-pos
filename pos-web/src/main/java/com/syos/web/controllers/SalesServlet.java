@@ -64,6 +64,9 @@ public class SalesServlet extends HttpServlet {
         } else if (pathInfo.startsWith("/view/")) {
             // View specific bill
             viewBill(request, response, pathInfo);
+        } else if (pathInfo.startsWith("/receipt/")) {
+            // View receipt for a bill
+            viewReceipt(request, response, pathInfo);
         } else if (pathInfo.equals("/available-items")) {
             // API endpoint: Get available items (JSON)
             getAvailableItems(request, response);
@@ -225,8 +228,8 @@ public class SalesServlet extends HttpServlet {
             logger.info("Sale completed: Bill #{} by user: {}",
                     billNumber, session.getAttribute("username"));
 
-            // Redirect to bill view using database-generated bill number
-            response.sendRedirect(request.getContextPath() + "/sales/view/" + billNumber);
+            // Redirect to receipt page using database-generated bill number
+            response.sendRedirect(request.getContextPath() + "/sales/receipt/" + billNumber);
 
         } catch (InsufficientStockException e) {
             logger.warn("Sale failed due to insufficient stock: {}", e.getMessage());
@@ -287,6 +290,37 @@ public class SalesServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid bill number");
         } catch (Exception e) {
             logger.error("Error viewing bill", e);
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private void viewReceipt(HttpServletRequest request, HttpServletResponse response, String pathInfo)
+            throws ServletException, IOException {
+        try {
+            // Extract bill number from path
+            String billNumberStr = pathInfo.substring("/receipt/".length());
+
+            // Remove "BILL-" prefix if present
+            if (billNumberStr.startsWith("BILL-")) {
+                billNumberStr = billNumberStr.substring(5);
+            }
+
+            int billNumber = Integer.parseInt(billNumberStr);
+
+            Bill bill = salesService.getBillByNumber(billNumber);
+
+            if (bill != null) {
+                request.setAttribute("bill", bill);
+                request.getRequestDispatcher("/WEB-INF/views/sales/receipt.jsp").forward(request, response);
+            } else {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Bill not found");
+            }
+
+        } catch (NumberFormatException e) {
+            logger.error("Invalid bill number format: {}", pathInfo, e);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid bill number");
+        } catch (Exception e) {
+            logger.error("Error viewing receipt", e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
