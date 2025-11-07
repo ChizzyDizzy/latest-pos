@@ -29,7 +29,7 @@
                 <c:forEach items="${bills}" var="bill">
                     <tr>
                         <td><strong>#${bill.billNumber.value}</strong></td>
-                        <td><fmt:formatDate value="${bill.billDate}" pattern="MMM dd, yyyy HH:mm:ss"/></td>
+                        <td><c:out value="${bill.billDate.toString().replace('T', ' ').substring(0, 19)}"/></td>
                         <td>${bill.items.size()} items</td>
                         <td class="price">$<fmt:formatNumber value="${bill.totalAmount.value}" pattern="#,##0.00"/></td>
                         <td class="price">$<fmt:formatNumber value="${bill.cashTendered.value}" pattern="#,##0.00"/></td>

@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -261,7 +263,14 @@ public class SalesServlet extends HttpServlet {
     private void viewBill(HttpServletRequest request, HttpServletResponse response, String pathInfo)
             throws ServletException, IOException {
         try {
+            // Extract bill number (handles both "BILL-123456" and "123456" formats)
             String billNumberStr = pathInfo.substring("/view/".length());
+
+            // Remove "BILL-" prefix if present
+            if (billNumberStr.startsWith("BILL-")) {
+                billNumberStr = billNumberStr.substring(5);
+            }
+
             int billNumber = Integer.parseInt(billNumberStr);
 
             Bill bill = salesService.getBillByNumber(billNumber);
@@ -274,11 +283,23 @@ public class SalesServlet extends HttpServlet {
             }
 
         } catch (NumberFormatException e) {
+            logger.error("Invalid bill number format: {}", pathInfo, e);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid bill number");
         } catch (Exception e) {
             logger.error("Error viewing bill", e);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    /**
+     * Helper method to convert LocalDateTime to java.util.Date for JSP compatibility
+     * JSP's fmt:formatDate doesn't support Java 8 LocalDateTime
+     */
+    private Date toDate(java.time.LocalDateTime localDateTime) {
+        if (localDateTime == null) {
+            return null;
+        }
+        return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
     }
 
     private void getAvailableItems(HttpServletRequest request, HttpServletResponse response)
