@@ -223,10 +223,10 @@ public class SalesServlet extends HttpServlet {
             session.removeAttribute("currentSale");
 
             logger.info("Sale completed: Bill #{} by user: {}",
-                    bill.getBillNumber(), session.getAttribute("username"));
+                    bill.getBillNumber().getValue(), session.getAttribute("username"));
 
             // Redirect to bill view
-            response.sendRedirect(request.getContextPath() + "/sales/view/" + bill.getBillNumber());
+            response.sendRedirect(request.getContextPath() + "/sales/view/" + bill.getBillNumber().getValue());
 
         } catch (InsufficientStockException e) {
             logger.warn("Sale failed due to insufficient stock: {}", e.getMessage());

@@ -6,7 +6,13 @@
 </jsp:include>
 
 <div class="sales-container">
-    <h1>Create New Sale</h1>
+    <div class="page-header-inline">
+        <h1>Create New Sale</h1>
+        <div>
+            <a href="${pageContext.request.contextPath}/sales/list" class="btn btn-secondary">View Bills</a>
+            <a href="${pageContext.request.contextPath}/dashboard" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+    </div>
 
     <c:if test="${not empty errorMessage}">
         <div class="alert alert-error">
@@ -108,6 +114,22 @@
 </div>
 
 <style>
+.page-header-inline {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.page-header-inline h1 {
+    margin: 0;
+}
+
+.page-header-inline div {
+    display: flex;
+    gap: 0.75rem;
+}
+
 .sales-layout {
     display: grid;
     grid-template-columns: 2fr 1fr;

@@ -12,6 +12,7 @@
             <a href="${pageContext.request.contextPath}/inventory/add" class="btn btn-primary">Add Stock</a>
             <a href="${pageContext.request.contextPath}/inventory/low-stock" class="btn btn-warning">Low Stock</a>
             <a href="${pageContext.request.contextPath}/inventory/expiring" class="btn btn-danger">Expiring Soon</a>
+            <a href="${pageContext.request.contextPath}/dashboard" class="btn btn-secondary">Back to Dashboard</a>
         </div>
     </div>
 

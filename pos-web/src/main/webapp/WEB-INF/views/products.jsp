@@ -6,8 +6,13 @@
 </jsp:include>
 
 <div class="page-container">
-    <h1>Available Products</h1>
-    <p class="subtitle">Browse our current inventory</p>
+    <div class="page-header-inline">
+        <div>
+            <h1>Available Products</h1>
+            <p class="subtitle">Browse our current inventory</p>
+        </div>
+        <a href="${pageContext.request.contextPath}/dashboard" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
 
     <c:if test="${not empty items}">
         <div class="products-grid">
@@ -159,6 +164,21 @@
     font-size: 1.1rem;
     color: #7f8c8d;
     margin: 0.5rem 0;
+}
+
+.page-header-inline {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.page-header-inline h1 {
+    margin: 0 0 0.5rem 0;
+}
+
+.page-header-inline .subtitle {
+    margin-bottom: 0;
 }
 </style>
 

@@ -5,8 +5,13 @@
 </jsp:include>
 
 <div class="page-container">
-    <h1>Reports & Analytics</h1>
-    <p class="subtitle">Generate various business reports to analyze sales, inventory, and operations</p>
+    <div class="page-header-inline">
+        <div>
+            <h1>Reports & Analytics</h1>
+            <p class="subtitle">Generate various business reports to analyze sales, inventory, and operations</p>
+        </div>
+        <a href="${pageContext.request.contextPath}/dashboard" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
 
     <div class="reports-grid">
         <div class="report-card">
@@ -111,6 +116,21 @@
 
 .report-card .btn {
     width: 100%;
+}
+
+.page-header-inline {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.page-header-inline h1 {
+    margin: 0 0 0.5rem 0;
+}
+
+.page-header-inline .subtitle {
+    margin-bottom: 0;
 }
 </style>
 

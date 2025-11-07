@@ -8,7 +8,10 @@
 <div class="page-container">
     <div class="page-header">
         <h1>User Management</h1>
-        <a href="${pageContext.request.contextPath}/users/register" class="btn btn-primary">Register New User</a>
+        <div class="button-group-inline">
+            <a href="${pageContext.request.contextPath}/users/register" class="btn btn-primary">Register New User</a>
+            <a href="${pageContext.request.contextPath}/dashboard" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
     </div>
 
     <c:if test="${not empty param.success}">
@@ -81,6 +84,11 @@
 .text-muted {
     color: #95a5a6;
     font-style: italic;
+}
+
+.button-group-inline {
+    display: flex;
+    gap: 1rem;
 }
 </style>
 
