@@ -79,14 +79,15 @@ public class BillGateway extends OracleDatabaseGateway<Bill> {
     /**
      * Save bill with its items in a transaction
      * @param bill The bill to save with items
+     * @return The database-generated bill number
      */
-    public void saveBillWithItems(Bill bill) {
-        connectionManager.executeWithTransaction(connection -> {
+    public int saveBillWithItems(Bill bill) {
+        return connectionManager.executeWithTransaction(connection -> {
             // Save bill
             String billSql = "INSERT INTO bills (bill_date, total_amount, discount, cash_tendered, change_amount, transaction_type) " +
                     "VALUES (?, ?, ?, ?, ?, ?)";
 
-            long billId;
+            int billId;
             try (PreparedStatement stmt = connection.prepareStatement(billSql, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setTimestamp(1, Timestamp.valueOf(bill.getBillDate()));
                 stmt.setBigDecimal(2, bill.getTotalAmount().getValue());
@@ -99,7 +100,7 @@ public class BillGateway extends OracleDatabaseGateway<Bill> {
 
                 try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
-                        billId = generatedKeys.getLong(1);
+                        billId = generatedKeys.getInt(1);
                     } else {
                         throw new SQLException("Failed to get generated bill ID");
                     }
@@ -112,7 +113,7 @@ public class BillGateway extends OracleDatabaseGateway<Bill> {
 
             try (PreparedStatement stmt = connection.prepareStatement(itemSql)) {
                 for (BillItem billItem : bill.getItems()) {
-                    stmt.setLong(1, billId);
+                    stmt.setInt(1, billId);
                     stmt.setString(2, billItem.getItem().getCode().getValue());
                     stmt.setInt(3, billItem.getQuantity().getValue());
                     stmt.setBigDecimal(4, billItem.getItem().getPrice().getValue());
@@ -121,6 +122,8 @@ public class BillGateway extends OracleDatabaseGateway<Bill> {
                 }
                 stmt.executeBatch();
             }
+
+            return billId;
         });
     }
 
