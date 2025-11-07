@@ -19,7 +19,7 @@ CREATE TABLE users (
                        username VARCHAR(50) UNIQUE NOT NULL,
                        email VARCHAR(100) NOT NULL,
                        password_hash VARCHAR(255) NOT NULL,
-                       role ENUM('ADMIN', 'CASHIER', 'MANAGER') NOT NULL,
+                       role ENUM('ADMIN', 'CASHIER', 'MANAGER', 'CUSTOMER') NOT NULL,
                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                        last_login_at TIMESTAMP NULL,
                        INDEX idx_username (username),
@@ -114,6 +114,8 @@ INSERT INTO users (username, email, password_hash, role) VALUES
 ('cashier1', 'cashier1@syos.com', '56f9a591bd64e713d87b1bb4e87062ad9b19080ad003b2cd8cdfcb9c3ab9da7b', 'CASHIER'),
 -- Password: manager123
 ('manager1', 'manager1@syos.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'MANAGER'),
+-- Password: customer123
+('customer1', 'customer1@syos.com', '6ed0b4dcab61c966e7f5aea5a9ea4c2cfbf28c41e5c7e0daaa29de2d5dafee11', 'CUSTOMER'),
 -- Password: test123 (for testing)
 ('test', 'test@syos.com', 'ecd71870d1963316a97e3ac3408c9835ad8cf0f3c1bc703527c30265534f75ae', 'ADMIN');
 
@@ -255,7 +257,8 @@ SELECT
         WHEN 'admin' THEN 'admin123'
         WHEN 'cashier1' THEN 'cashier123'
         WHEN 'manager1' THEN 'manager123'
+        WHEN 'customer1' THEN 'customer123'
         WHEN 'test' THEN 'test123'
         END as password
 FROM users
-ORDER BY role, username;
+ORDER BY FIELD(role, 'ADMIN', 'MANAGER', 'CASHIER', 'CUSTOMER'), username;

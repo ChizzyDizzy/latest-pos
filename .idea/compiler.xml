@@ -7,13 +7,9 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="pos-cli" />
-        <module name="syos-pos-system" />
-<<<<<<< Updated upstream
         <module name="pos-core" />
         <module name="pos-web" />
-=======
         <module name="syos-pos-system-parent" />
->>>>>>> Stashed changes
       </profile>
     </annotationProcessing>
   </component>
