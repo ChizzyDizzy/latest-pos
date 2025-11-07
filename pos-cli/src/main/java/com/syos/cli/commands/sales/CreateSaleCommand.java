@@ -1,9 +1,9 @@
-package com.syos.application.commands.sales;
+package com.syos.cli.commands.sales;
 
 import com.syos.application.interfaces.Command;
 import com.syos.application.services.SalesService;
-import com.syos.infrastructure.ui.presenters.SalesPresenter;
-import com.syos.infrastructure.ui.cli.InputReader;
+import com.syos.cli.ui.presenters.SalesPresenter;
+import com.syos.cli.ui.cli.InputReader;
 import com.syos.domain.exceptions.*;
 import java.math.BigDecimal;
 

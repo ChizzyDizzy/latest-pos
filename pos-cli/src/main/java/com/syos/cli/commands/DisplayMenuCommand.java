@@ -1,7 +1,7 @@
-package com.syos.application.commands;
+package com.syos.cli.commands;
 
 import com.syos.application.interfaces.Command;
-import com.syos.infrastructure.ui.menu.Menu;
+import com.syos.cli.ui.menu.Menu;
 
 public class DisplayMenuCommand implements Command {
     private static DisplayMenuCommand instance;

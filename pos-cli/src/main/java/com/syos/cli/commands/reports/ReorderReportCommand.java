@@ -1,8 +1,8 @@
-package com.syos.application.commands.reports;
+package com.syos.cli.commands.reports;
 
 import com.syos.application.interfaces.Command;
 import com.syos.application.services.ReportService;
-import com.syos.infrastructure.ui.presenters.ReportPresenter;
+import com.syos.cli.ui.presenters.ReportPresenter;
 
 /**
  * Command to generate reorder level report

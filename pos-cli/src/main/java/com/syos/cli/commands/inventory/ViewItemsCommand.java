@@ -1,8 +1,8 @@
-package com.syos.application.commands.inventory;
+package com.syos.cli.commands.inventory;
 
 import com.syos.application.interfaces.Command;
 import com.syos.application.services.InventoryService;
-import com.syos.infrastructure.ui.presenters.InventoryPresenter;
+import com.syos.cli.ui.presenters.InventoryPresenter;
 
 public class ViewItemsCommand implements Command {
     private final InventoryService inventoryService;
