@@ -1,11 +1,11 @@
 package com.syos.cli.factories;
 
 import com.syos.application.interfaces.Command;
-import com.syos.application.commands.*;
-import com.syos.application.commands.sales.*;
-import com.syos.application.commands.inventory.*;
-import com.syos.application.commands.reports.*;
-import com.syos.application.commands.user.*;
+import com.syos.cli.commands.*;
+import com.syos.cli.commands.sales.*;
+import com.syos.cli.commands.inventory.*;
+import com.syos.cli.commands.reports.*;
+import com.syos.cli.commands.user.*;
 import com.syos.cli.ui.cli.InputReader;
 
 /**

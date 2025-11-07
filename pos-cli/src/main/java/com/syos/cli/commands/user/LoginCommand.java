@@ -1,9 +1,9 @@
-package com.syos.application.commands.user;
+package com.syos.cli.commands.user;
 
 import com.syos.application.interfaces.Command;
 import com.syos.application.services.UserService;
-import com.syos.infrastructure.ui.presenters.UserPresenter;
-import com.syos.infrastructure.ui.cli.InputReader;
+import com.syos.cli.ui.presenters.UserPresenter;
+import com.syos.cli.ui.cli.InputReader;
 import com.syos.domain.entities.User;
 
 /**

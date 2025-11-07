@@ -1,11 +1,11 @@
-package com.syos.application.commands.reports;
+package com.syos.cli.commands.reports;
 
 import com.syos.application.interfaces.Command;
 import com.syos.application.services.ReportService;
 import com.syos.application.services.InventoryService;
-import com.syos.infrastructure.ui.presenters.ReportPresenter;
-import com.syos.infrastructure.ui.presenters.InventoryPresenter;
-import com.syos.infrastructure.ui.cli.InputReader;
+import com.syos.cli.ui.presenters.ReportPresenter;
+import com.syos.cli.ui.presenters.InventoryPresenter;
+import com.syos.cli.ui.cli.InputReader;
 import com.syos.domain.entities.Item;
 import java.util.List;
 import java.util.Map;

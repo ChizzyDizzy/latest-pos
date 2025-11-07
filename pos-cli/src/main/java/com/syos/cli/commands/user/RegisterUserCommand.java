@@ -1,4 +1,4 @@
-package com.syos.application.commands.user;
+package com.syos.cli.commands.user;
 
 import com.syos.application.interfaces.Command;
 import com.syos.application.services.UserService;
