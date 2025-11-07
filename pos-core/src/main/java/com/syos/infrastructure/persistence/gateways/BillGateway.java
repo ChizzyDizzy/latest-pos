@@ -145,7 +145,7 @@ public class BillGateway extends OracleDatabaseGateway<Bill> {
                     "ORDER BY b.bill_number, bi.id";
 
             List<Bill> bills = new ArrayList<>();
-            Bill currentBill = null;
+            Bill.Builder currentBuilder = null;
             int lastBillNumber = -1;
 
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -155,18 +155,31 @@ public class BillGateway extends OracleDatabaseGateway<Bill> {
                     while (rs.next()) {
                         int billNumber = rs.getInt("bill_number");
 
-                        // If new bill, create it
+                        // If new bill, finalize previous and start new one
                         if (billNumber != lastBillNumber) {
-                            currentBill = mapper.mapRow(rs);
-                            bills.add(currentBill);
+                            if (currentBuilder != null) {
+                                bills.add(currentBuilder.build());
+                            }
+
+                            currentBuilder = new Bill.Builder()
+                                    .withBillNumber(rs.getInt("bill_number"))
+                                    .withDate(rs.getTimestamp("bill_date").toLocalDateTime())
+                                    .withDiscount(rs.getBigDecimal("discount"))
+                                    .withCashTendered(rs.getBigDecimal("cash_tendered"))
+                                    .withTransactionType(TransactionType.valueOf(rs.getString("transaction_type")));
                             lastBillNumber = billNumber;
                         }
 
                         // Add bill item if exists
                         if (rs.getString("item_code") != null) {
                             BillItem billItem = mapper.mapBillItem(rs);
-                            currentBill.getItems().add(billItem);
+                            currentBuilder.addBillItem(billItem);
                         }
+                    }
+
+                    // Don't forget to add the last bill
+                    if (currentBuilder != null) {
+                        bills.add(currentBuilder.build());
                     }
                 }
             }
@@ -186,7 +199,7 @@ public class BillGateway extends OracleDatabaseGateway<Bill> {
                     "ORDER BY b.bill_date DESC, b.bill_number, bi.id";
 
             List<Bill> bills = new ArrayList<>();
-            Bill currentBill = null;
+            Bill.Builder currentBuilder = null;
             int lastBillNumber = -1;
 
             try (Statement stmt = connection.createStatement();
@@ -195,18 +208,31 @@ public class BillGateway extends OracleDatabaseGateway<Bill> {
                 while (rs.next()) {
                     int billNumber = rs.getInt("bill_number");
 
-                    // If new bill, create it
+                    // If new bill, finalize previous and start new one
                     if (billNumber != lastBillNumber) {
-                        currentBill = mapper.mapRow(rs);
-                        bills.add(currentBill);
+                        if (currentBuilder != null) {
+                            bills.add(currentBuilder.build());
+                        }
+
+                        currentBuilder = new Bill.Builder()
+                                .withBillNumber(rs.getInt("bill_number"))
+                                .withDate(rs.getTimestamp("bill_date").toLocalDateTime())
+                                .withDiscount(rs.getBigDecimal("discount"))
+                                .withCashTendered(rs.getBigDecimal("cash_tendered"))
+                                .withTransactionType(TransactionType.valueOf(rs.getString("transaction_type")));
                         lastBillNumber = billNumber;
                     }
 
                     // Add bill item if exists
                     if (rs.getString("item_code") != null) {
                         BillItem billItem = mapper.mapBillItem(rs);
-                        currentBill.getItems().add(billItem);
+                        currentBuilder.addBillItem(billItem);
                     }
+                }
+
+                // Don't forget to add the last bill
+                if (currentBuilder != null) {
+                    bills.add(currentBuilder.build());
                 }
             }
             return bills;
@@ -225,26 +251,31 @@ public class BillGateway extends OracleDatabaseGateway<Bill> {
                     "LEFT JOIN items i ON bi.item_code = i.code " +
                     "WHERE b.bill_number = ?";
 
-            Bill bill = null;
+            Bill.Builder builder = null;
 
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
                 stmt.setInt(1, billNumber);
 
                 try (ResultSet rs = stmt.executeQuery()) {
                     while (rs.next()) {
-                        if (bill == null) {
-                            bill = mapper.mapRow(rs);
+                        if (builder == null) {
+                            builder = new Bill.Builder()
+                                    .withBillNumber(rs.getInt("bill_number"))
+                                    .withDate(rs.getTimestamp("bill_date").toLocalDateTime())
+                                    .withDiscount(rs.getBigDecimal("discount"))
+                                    .withCashTendered(rs.getBigDecimal("cash_tendered"))
+                                    .withTransactionType(TransactionType.valueOf(rs.getString("transaction_type")));
                         }
 
                         // Add bill item if exists
                         if (rs.getString("item_code") != null) {
                             BillItem billItem = mapper.mapBillItem(rs);
-                            bill.getItems().add(billItem);
+                            builder.addBillItem(billItem);
                         }
                     }
                 }
             }
-            return bill;
+            return builder != null ? builder.build() : null;
         });
     }
 
@@ -308,7 +339,7 @@ public class BillGateway extends OracleDatabaseGateway<Bill> {
                     "ORDER BY b.bill_date DESC, b.bill_number, bi.id";
 
             List<Bill> bills = new ArrayList<>();
-            Bill currentBill = null;
+            Bill.Builder currentBuilder = null;
             int lastBillNumber = -1;
 
             try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -319,18 +350,31 @@ public class BillGateway extends OracleDatabaseGateway<Bill> {
                     while (rs.next()) {
                         int billNumber = rs.getInt("bill_number");
 
-                        // If new bill, create it
+                        // If new bill, finalize previous and start new one
                         if (billNumber != lastBillNumber) {
-                            currentBill = mapper.mapRow(rs);
-                            bills.add(currentBill);
+                            if (currentBuilder != null) {
+                                bills.add(currentBuilder.build());
+                            }
+
+                            currentBuilder = new Bill.Builder()
+                                    .withBillNumber(rs.getInt("bill_number"))
+                                    .withDate(rs.getTimestamp("bill_date").toLocalDateTime())
+                                    .withDiscount(rs.getBigDecimal("discount"))
+                                    .withCashTendered(rs.getBigDecimal("cash_tendered"))
+                                    .withTransactionType(TransactionType.valueOf(rs.getString("transaction_type")));
                             lastBillNumber = billNumber;
                         }
 
                         // Add bill item if exists
                         if (rs.getString("item_code") != null) {
                             BillItem billItem = mapper.mapBillItem(rs);
-                            currentBill.getItems().add(billItem);
+                            currentBuilder.addBillItem(billItem);
                         }
+                    }
+
+                    // Don't forget to add the last bill
+                    if (currentBuilder != null) {
+                        bills.add(currentBuilder.build());
                     }
                 }
             }
