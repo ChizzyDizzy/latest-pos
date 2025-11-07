@@ -217,16 +217,16 @@ public class SalesServlet extends HttpServlet {
 
             // Complete sale and save (THREAD-SAFE operation with double-check locking)
             Bill bill = saleBuilder.completeSale(cashTendered);
-            salesService.saveBill(bill); // Synchronized method prevents race conditions
+            int billNumber = salesService.saveBill(bill); // Synchronized method prevents race conditions
 
             // Clear sale from session
             session.removeAttribute("currentSale");
 
             logger.info("Sale completed: Bill #{} by user: {}",
-                    bill.getBillNumber().getValue(), session.getAttribute("username"));
+                    billNumber, session.getAttribute("username"));
 
-            // Redirect to bill view
-            response.sendRedirect(request.getContextPath() + "/sales/view/" + bill.getBillNumber().getValue());
+            // Redirect to bill view using database-generated bill number
+            response.sendRedirect(request.getContextPath() + "/sales/view/" + billNumber);
 
         } catch (InsufficientStockException e) {
             logger.warn("Sale failed due to insufficient stock: {}", e.getMessage());

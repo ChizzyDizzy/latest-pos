@@ -138,7 +138,7 @@
                     <c:if test="${status.index < 10}">
                         <tr>
                             <td>#${bill.billNumber.value}</td>
-                            <td>${bill.billDate}</td>
+                            <td><c:out value="${bill.billDate.toString().replace('T', ' ').substring(0, 19)}"/></td>
                             <td class="price">$<fmt:formatNumber value="${bill.totalAmount.value}" pattern="#,##0.00"/></td>
                             <td><span class="badge badge-${bill.transactionType}">${bill.transactionType}</span></td>
                             <td>

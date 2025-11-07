@@ -47,9 +47,10 @@ public class SalesService {
      * oversell inventory.
      *
      * @param bill The bill to save
+     * @return The database-generated bill number
      * @throws InsufficientStockException if stock is insufficient at save time
      */
-    public void saveBill(Bill bill) {
+    public int saveBill(Bill bill) {
         synchronized (saveLock) {
             // Double-check stock availability at save time (prevents race conditions)
             for (BillItem billItem : bill.getItems()) {
@@ -65,7 +66,7 @@ public class SalesService {
 
             // Save bill and update inventory atomically
             // NOTE: In production, this should use database transactions
-            billGateway.saveBillWithItems(bill);
+            int billNumber = billGateway.saveBillWithItems(bill);
 
             // Update item quantities
             for (BillItem billItem : bill.getItems()) {
@@ -73,6 +74,8 @@ public class SalesService {
                 item.sell(billItem.getQuantity().getValue());
                 itemGateway.update(item);
             }
+
+            return billNumber;
         }
     }
 
