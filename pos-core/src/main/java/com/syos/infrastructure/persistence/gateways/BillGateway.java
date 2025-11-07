@@ -82,7 +82,10 @@ public class BillGateway extends OracleDatabaseGateway<Bill> {
      * @return The database-generated bill number
      */
     public int saveBillWithItems(Bill bill) {
-        return connectionManager.executeWithTransaction(connection -> {
+        // Use array as holder to capture the generated ID from the transaction
+        final int[] billIdHolder = new int[1];
+
+        connectionManager.executeWithTransaction(connection -> {
             // Save bill
             String billSql = "INSERT INTO bills (bill_date, total_amount, discount, cash_tendered, change_amount, transaction_type) " +
                     "VALUES (?, ?, ?, ?, ?, ?)";
@@ -101,6 +104,7 @@ public class BillGateway extends OracleDatabaseGateway<Bill> {
                 try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         billId = generatedKeys.getInt(1);
+                        billIdHolder[0] = billId; // Store in holder
                     } else {
                         throw new SQLException("Failed to get generated bill ID");
                     }
@@ -122,9 +126,9 @@ public class BillGateway extends OracleDatabaseGateway<Bill> {
                 }
                 stmt.executeBatch();
             }
-
-            return billId;
         });
+
+        return billIdHolder[0];
     }
 
     /**
