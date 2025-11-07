@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SYOS POS System - Tomcat Server Configuration for Performance Testing
+
+  Optimized for 200 concurrent users based on:
+  - Tomcat Thread Pool: maxThreads=200, acceptCount=100
+  - Connection Timeout: 20000ms
+  - Keep-Alive: Enabled
+  - Compression: Enabled for better performance
+
+  References:
+  - CB011366 Performance Testing Report
+  - Apache Tomcat 9 Documentation
+-->
+<Server port="8005" shutdown="SHUTDOWN">
+  <Listener className="org.apache.catalina.startup.VersionLoggerListener" />
+  <Listener className="org.apache.catalina.core.AprLifecycleListener" SSLEngine="on" />
+  <Listener className="org.apache.catalina.core.JreMemoryLeakPreventionListener" />
+  <Listener className="org.apache.catalina.mbeans.GlobalResourcesLifecycleListener" />
+  <Listener className="org.apache.catalina.core.ThreadLocalLeakPreventionListener" />
+
+  <GlobalNamingResources>
+    <Resource name="UserDatabase" auth="Container"
+              type="org.apache.catalina.UserDatabase"
+              description="User database that can be updated and saved"
+              factory="org.apache.catalina.users.MemoryUserDatabaseFactory"
+              pathname="conf/tomcat-users.xml" />
+  </GlobalNamingResources>
+
+  <Service name="Catalina">
+
+    <!--
+      Connector Configuration for High Concurrent Load
+      ================================================
+
+      maxThreads: 200
+      - Maximum number of request processing threads
+      - Directly supports 200 concurrent users as per requirement
+
+      minSpareThreads: 25
+      - Minimum number of worker threads always running
+      - Ensures quick response to burst traffic
+
+      acceptCount: 100
+      - Maximum queue length for incoming connection requests
+      - Prevents connection refused errors during traffic spikes
+
+      connectionTimeout: 20000
+      - 20 seconds timeout for connection establishment
+      - Prevents thread starvation from slow clients
+
+      maxConnections: 250
+      - Maximum number of connections server will accept/process
+      - Set slightly higher than maxThreads for buffering
+
+      enableLookups: false
+      - Disabled DNS lookups for better performance
+
+      compression: on
+      - Enables HTTP compression for text resources
+      - Reduces network bandwidth usage
+
+      compressionMinSize: 2048
+      - Minimum response size (bytes) for compression
+
+      compressibleMimeType: Multiple types
+      - MIME types eligible for compression
+    -->
+    <Connector port="8080" protocol="HTTP/1.1"
+               connectionTimeout="20000"
+               redirectPort="8443"
+               maxThreads="200"
+               minSpareThreads="25"
+               acceptCount="100"
+               maxConnections="250"
+               enableLookups="false"
+               compression="on"
+               compressionMinSize="2048"
+               compressibleMimeType="text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json,application/xml"
+               URIEncoding="UTF-8"
+               useBodyEncodingForURI="true"
+               disableUploadTimeout="true"
+               maxKeepAliveRequests="100"
+               keepAliveTimeout="5000" />
+
+    <!--
+      SSL/TLS Connector (Commented Out - Enable if HTTPS is needed)
+      ============================================================
+    -->
+    <!--
+    <Connector port="8443" protocol="org.apache.coyote.http11.Http11NioProtocol"
+               maxThreads="200" minSpareThreads="25"
+               acceptCount="100"
+               connectionTimeout="20000"
+               SSLEnabled="true"
+               scheme="https" secure="true"
+               clientAuth="false" sslProtocol="TLS">
+        <SSLHostConfig>
+            <Certificate certificateKeystoreFile="conf/localhost-rsa.jks"
+                         type="RSA" />
+        </SSLHostConfig>
+    </Connector>
+    -->
+
+    <!--
+      AJP Connector (Commented Out - Enable if using Apache httpd with mod_jk)
+      ========================================================================
+    -->
+    <!--
+    <Connector protocol="AJP/1.3"
+               address="::1"
+               port="8009"
+               redirectPort="8443"
+               secretRequired="false" />
+    -->
+
+    <Engine name="Catalina" defaultHost="localhost">
+
+      <Realm className="org.apache.catalina.realm.LockOutRealm">
+        <Realm className="org.apache.catalina.realm.UserDatabaseRealm"
+               resourceName="UserDatabase"/>
+      </Realm>
+
+      <Host name="localhost"  appBase="webapps"
+            unpackWARs="true" autoDeploy="true">
+
+        <!--
+          Access Log Configuration
+          ========================
+
+          Pattern Explanation:
+          - %h: Remote host name/IP
+          - %l: Remote logical username (usually -)
+          - %u: Remote user authenticated
+          - %t: Date and time
+          - %r: First line of request
+          - %s: HTTP status code
+          - %b: Bytes sent (excluding HTTP headers)
+          - %D: Time taken to process request (milliseconds)
+          - %T: Time taken to process request (seconds)
+
+          This pattern is useful for performance analysis.
+        -->
+        <Valve className="org.apache.catalina.valves.AccessLogValve" directory="logs"
+               prefix="localhost_access_log" suffix=".txt"
+               pattern="%h %l %u %t &quot;%r&quot; %s %b %D %T" />
+
+        <!--
+          Performance Monitoring Valve
+          ============================
+          Logs slow requests for performance troubleshooting
+        -->
+        <Valve className="org.apache.catalina.valves.StuckThreadDetectionValve"
+               threshold="60" />
+
+      </Host>
+    </Engine>
+  </Service>
+</Server>
