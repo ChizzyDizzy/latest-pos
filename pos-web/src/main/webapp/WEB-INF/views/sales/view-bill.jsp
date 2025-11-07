@@ -18,7 +18,7 @@
         <div class="bill-header">
             <h2>SYOS - Synex Outlet Store</h2>
             <p>Point of Sale System</p>
-            <p>Date: <fmt:formatDate value="${bill.billDate}" pattern="MMM dd, yyyy HH:mm:ss"/></p>
+            <p>Date: <c:out value="${bill.billDate.toString().replace('T', ' ').substring(0, 19)}"/></p>
             <p>Transaction Type: <span class="badge">${bill.transactionType}</span></p>
         </div>
 

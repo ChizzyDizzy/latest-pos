@@ -23,8 +23,9 @@
     <div class="report-container">
         <div class="report-header">
             <h2>SYOS - Daily Sales Report</h2>
-            <p>Date: <fmt:formatDate value="${reportDate}" pattern="MMMM dd, yyyy"/></p>
-            <p>Generated: <fmt:formatDate value="${java.util.Date()}" pattern="MMM dd, yyyy HH:mm:ss"/></p>
+            <p>Date: <c:out value="${reportDate}"/></p>
+            <jsp:useBean id="now" class="java.util.Date"/>
+            <p>Generated: <fmt:formatDate value="${now}" pattern="MMM dd, yyyy HH:mm:ss"/></p>
         </div>
 
         <div class="report-content">
