@@ -1,5 +1,6 @@
--- Complete Database Setup for SYOS POS System
--- Run this file with: mysql -u root -p < complete_database_setup.sql
+-- SYOS POS System - Complete Database Setup
+-- This file creates the database schema, tables, users, and sample data
+-- Run this file with: mysql -u root -p < sql/create_database.sql
 
 -- Create database
 CREATE DATABASE IF NOT EXISTS syos_db;
@@ -13,113 +14,127 @@ DROP TABLE IF EXISTS audit_log;
 DROP TABLE IF EXISTS items;
 DROP TABLE IF EXISTS users;
 
+-- ============================================================================
+-- TABLE DEFINITIONS
+-- ============================================================================
+
 -- Create Users table
 CREATE TABLE users (
-                       id BIGINT PRIMARY KEY AUTO_INCREMENT,
-                       username VARCHAR(50) UNIQUE NOT NULL,
-                       email VARCHAR(100) NOT NULL,
-                       password_hash VARCHAR(255) NOT NULL,
-                       role ENUM('ADMIN', 'CASHIER', 'MANAGER', 'CUSTOMER') NOT NULL,
-                       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                       last_login_at TIMESTAMP NULL,
-                       INDEX idx_username (username),
-                       INDEX idx_email (email)
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    role ENUM('ADMIN', 'CASHIER', 'MANAGER', 'CUSTOMER') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_login_at TIMESTAMP NULL,
+    INDEX idx_username (username),
+    INDEX idx_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Create Items table
 CREATE TABLE items (
-                       code VARCHAR(20) PRIMARY KEY,
-                       name VARCHAR(100) NOT NULL,
-                       price DECIMAL(10, 2) NOT NULL,
-                       quantity INT NOT NULL DEFAULT 0,
-                       state ENUM('IN_STORE', 'ON_SHELF', 'EXPIRED', 'SOLD_OUT') NOT NULL DEFAULT 'IN_STORE',
-                       purchase_date DATE NOT NULL,
-                       expiry_date DATE,
-                       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                       INDEX idx_state (state),
-                       INDEX idx_expiry (expiry_date),
-                       INDEX idx_quantity (quantity)
+    code VARCHAR(20) PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    quantity INT NOT NULL DEFAULT 0,
+    state ENUM('IN_STORE', 'ON_SHELF', 'EXPIRED', 'SOLD_OUT') NOT NULL DEFAULT 'IN_STORE',
+    purchase_date DATE NOT NULL,
+    expiry_date DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_state (state),
+    INDEX idx_expiry (expiry_date),
+    INDEX idx_quantity (quantity)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Create Bills table
 CREATE TABLE bills (
-                       bill_number BIGINT PRIMARY KEY AUTO_INCREMENT,
-                       bill_date DATETIME NOT NULL,
-                       total_amount DECIMAL(10, 2) NOT NULL,
-                       discount DECIMAL(10, 2) DEFAULT 0.00,
-                       cash_tendered DECIMAL(10, 2) NOT NULL,
-                       change_amount DECIMAL(10, 2) NOT NULL,
-                       transaction_type ENUM('IN_STORE', 'ONLINE') NOT NULL DEFAULT 'IN_STORE',
-                       user_id BIGINT,
-                       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
-                       INDEX idx_bill_date (bill_date),
-                       INDEX idx_transaction_type (transaction_type),
-                       INDEX idx_user_id (user_id)
+    bill_number BIGINT PRIMARY KEY AUTO_INCREMENT,
+    bill_date DATETIME NOT NULL,
+    total_amount DECIMAL(10, 2) NOT NULL,
+    discount DECIMAL(10, 2) DEFAULT 0.00,
+    cash_tendered DECIMAL(10, 2) NOT NULL,
+    change_amount DECIMAL(10, 2) NOT NULL,
+    transaction_type ENUM('IN_STORE', 'ONLINE') NOT NULL DEFAULT 'IN_STORE',
+    user_id BIGINT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
+    INDEX idx_bill_date (bill_date),
+    INDEX idx_transaction_type (transaction_type),
+    INDEX idx_user_id (user_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Create Bill Items table (for bill details)
 CREATE TABLE bill_items (
-                            id BIGINT PRIMARY KEY AUTO_INCREMENT,
-                            bill_number BIGINT NOT NULL,
-                            item_code VARCHAR(20) NOT NULL,
-                            quantity INT NOT NULL,
-                            unit_price DECIMAL(10, 2) NOT NULL,
-                            total_price DECIMAL(10, 2) NOT NULL,
-                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                            FOREIGN KEY (bill_number) REFERENCES bills(bill_number) ON DELETE CASCADE,
-                            FOREIGN KEY (item_code) REFERENCES items(code) ON DELETE RESTRICT,
-                            INDEX idx_bill_number (bill_number),
-                            INDEX idx_item_code (item_code)
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    bill_number BIGINT NOT NULL,
+    item_code VARCHAR(20) NOT NULL,
+    quantity INT NOT NULL,
+    unit_price DECIMAL(10, 2) NOT NULL,
+    total_price DECIMAL(10, 2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (bill_number) REFERENCES bills(bill_number) ON DELETE CASCADE,
+    FOREIGN KEY (item_code) REFERENCES items(code) ON DELETE RESTRICT,
+    INDEX idx_bill_number (bill_number),
+    INDEX idx_item_code (item_code)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Create Stock movements table (for tracking item movements)
 CREATE TABLE stock_movements (
-                                 id BIGINT PRIMARY KEY AUTO_INCREMENT,
-                                 item_code VARCHAR(20) NOT NULL,
-                                 movement_type ENUM('PURCHASE', 'SHELF', 'SALE', 'EXPIRE', 'ADJUSTMENT') NOT NULL,
-                                 quantity INT NOT NULL,
-                                 from_state ENUM('IN_STORE', 'ON_SHELF', 'EXPIRED', 'SOLD_OUT'),
-                                 to_state ENUM('IN_STORE', 'ON_SHELF', 'EXPIRED', 'SOLD_OUT'),
-                                 movement_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-                                 user_id BIGINT,
-                                 notes TEXT,
-                                 FOREIGN KEY (item_code) REFERENCES items(code) ON DELETE CASCADE,
-                                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
-                                 INDEX idx_movement_date (movement_date),
-                                 INDEX idx_item_movement (item_code, movement_date)
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    item_code VARCHAR(20) NOT NULL,
+    movement_type ENUM('PURCHASE', 'SHELF', 'SALE', 'EXPIRE', 'ADJUSTMENT') NOT NULL,
+    quantity INT NOT NULL,
+    from_state ENUM('IN_STORE', 'ON_SHELF', 'EXPIRED', 'SOLD_OUT'),
+    to_state ENUM('IN_STORE', 'ON_SHELF', 'EXPIRED', 'SOLD_OUT'),
+    movement_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    user_id BIGINT,
+    notes TEXT,
+    FOREIGN KEY (item_code) REFERENCES items(code) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
+    INDEX idx_movement_date (movement_date),
+    INDEX idx_item_movement (item_code, movement_date)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Create Audit log table
 CREATE TABLE audit_log (
-                           id BIGINT PRIMARY KEY AUTO_INCREMENT,
-                           table_name VARCHAR(50) NOT NULL,
-                           record_id VARCHAR(50) NOT NULL,
-                           action ENUM('INSERT', 'UPDATE', 'DELETE') NOT NULL,
-                           user_id BIGINT,
-                           action_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                           old_values JSON,
-                           new_values JSON,
-                           FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
-                           INDEX idx_audit_timestamp (action_timestamp),
-                           INDEX idx_table_record (table_name, record_id)
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    table_name VARCHAR(50) NOT NULL,
+    record_id VARCHAR(50) NOT NULL,
+    action ENUM('INSERT', 'UPDATE', 'DELETE') NOT NULL,
+    user_id BIGINT,
+    action_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    old_values JSON,
+    new_values JSON,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
+    INDEX idx_audit_timestamp (action_timestamp),
+    INDEX idx_table_record (table_name, record_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Insert default users with proper password hashes
-INSERT INTO users (username, email, password_hash, role) VALUES
--- Password: admin123 (SHA-256 hash)
-('admin', 'admin@syos.com', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'ADMIN'),
--- Password: cashier123
-('cashier1', 'cashier1@syos.com', '56f9a591bd64e713d87b1bb4e87062ad9b19080ad003b2cd8cdfcb9c3ab9da7b', 'CASHIER'),
--- Password: manager123
-('manager1', 'manager1@syos.com', 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f', 'MANAGER'),
--- Password: customer123
-('customer1', 'customer1@syos.com', '6ed0b4dcab61c966e7f5aea5a9ea4c2cfbf28c41e5c7e0daaa29de2d5dafee11', 'CUSTOMER'),
--- Password: test123 (for testing)
-('test', 'test@syos.com', 'ecd71870d1963316a97e3ac3408c9835ad8cf0f3c1bc703527c30265534f75ae', 'ADMIN');
+-- ============================================================================
+-- DEFAULT USER ACCOUNTS
+-- ============================================================================
 
--- Insert sample items
+-- Insert default users with SHA-256 hashed passwords
+-- Password hashing uses SHA-256 algorithm
+
+INSERT INTO users (username, email, password_hash, role) VALUES
+-- Username: admin | Password: admin123
+('admin', 'admin@syos.com', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9', 'ADMIN'),
+
+-- Username: manager_new | Password: 123456
+('manager_new', 'manager@syos.com', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'MANAGER'),
+
+-- Username: cashier_new | Password: 123456
+('cashier_new', 'cashier@syos.com', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'CASHIER'),
+
+-- Username: customer_new | Password: 123456
+('customer_new', 'customer@syos.com', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'CUSTOMER');
+
+-- ============================================================================
+-- SAMPLE INVENTORY ITEMS
+-- ============================================================================
+
 INSERT INTO items (code, name, price, quantity, state, purchase_date, expiry_date) VALUES
 -- Dairy Products
 ('MILK001', 'Fresh Milk 1L', 3.50, 100, 'IN_STORE', CURDATE(), DATE_ADD(CURDATE(), INTERVAL 7 DAY)),
@@ -149,7 +164,11 @@ INSERT INTO items (code, name, price, quantity, state, purchase_date, expiry_dat
 ('BANANA001', 'Bananas 1kg', 2.50, 50, 'ON_SHELF', CURDATE(), DATE_ADD(CURDATE(), INTERVAL 2 DAY)),
 ('TOMATO001', 'Fresh Tomatoes 1kg', 3.00, 40, 'ON_SHELF', CURDATE(), DATE_ADD(CURDATE(), INTERVAL 4 DAY));
 
--- Create views for reporting
+-- ============================================================================
+-- DATABASE VIEWS FOR REPORTING
+-- ============================================================================
+
+-- View: Daily Sales Summary
 CREATE OR REPLACE VIEW daily_sales_summary AS
 SELECT
     DATE(b.bill_date) as sale_date,
@@ -160,9 +179,10 @@ SELECT
     COUNT(DISTINCT bi.item_code) as unique_items_sold,
     SUM(bi.quantity) as total_items_sold
 FROM bills b
-         LEFT JOIN bill_items bi ON b.bill_number = bi.bill_number
+LEFT JOIN bill_items bi ON b.bill_number = bi.bill_number
 GROUP BY DATE(b.bill_date);
 
+-- View: Low Stock Items (quantity < 50)
 CREATE OR REPLACE VIEW low_stock_items AS
 SELECT
     code,
@@ -175,6 +195,7 @@ WHERE quantity < 50
   AND state NOT IN ('EXPIRED', 'SOLD_OUT')
 ORDER BY quantity ASC;
 
+-- View: Items Expiring Soon (within 7 days)
 CREATE OR REPLACE VIEW expiring_soon AS
 SELECT
     code,
@@ -189,6 +210,7 @@ WHERE expiry_date IS NOT NULL
   AND state NOT IN ('EXPIRED', 'SOLD_OUT')
 ORDER BY expiry_date ASC;
 
+-- View: Inventory Value by State
 CREATE OR REPLACE VIEW inventory_value AS
 SELECT
     state,
@@ -200,9 +222,13 @@ WHERE state NOT IN ('EXPIRED', 'SOLD_OUT')
 GROUP BY state
 WITH ROLLUP;
 
--- Create stored procedures for common operations
+-- ============================================================================
+-- STORED PROCEDURES
+-- ============================================================================
+
 DELIMITER //
 
+-- Procedure: Record a sale and update inventory
 CREATE PROCEDURE sp_record_sale(
     IN p_bill_number BIGINT,
     IN p_item_code VARCHAR(20),
@@ -219,6 +245,7 @@ BEGIN
     VALUES (p_item_code, 'SALE', p_quantity, 'ON_SHELF', 'ON_SHELF', CONCAT('Bill #', p_bill_number));
 END//
 
+-- Procedure: Automatically expire items past expiry date
 CREATE PROCEDURE sp_expire_items()
 BEGIN
     -- Mark expired items
@@ -237,28 +264,36 @@ END//
 
 DELIMITER ;
 
--- Grant privileges (optional - if not using root)
--- CREATE USER IF NOT EXISTS 'syos_app'@'localhost' IDENTIFIED BY 'syos_password';
--- GRANT ALL PRIVILEGES ON syos_db.* TO 'syos_app'@'localhost';
--- FLUSH PRIVILEGES;
+-- ============================================================================
+-- SETUP COMPLETE
+-- ============================================================================
 
 -- Display summary
 SELECT 'Database setup completed successfully!' as Status;
-SELECT COUNT(*) as user_count FROM users;
-SELECT COUNT(*) as item_count FROM items;
+SELECT COUNT(*) as total_users FROM users;
+SELECT COUNT(*) as total_items FROM items;
 SELECT DATABASE() as current_database;
 
--- Show user credentials for reference
+-- Display user credentials for reference
+SELECT
+    '==== DEFAULT LOGIN CREDENTIALS ====' as '';
+
 SELECT
     username,
     email,
     role,
     CASE username
         WHEN 'admin' THEN 'admin123'
-        WHEN 'cashier1' THEN 'cashier123'
-        WHEN 'manager1' THEN 'manager123'
-        WHEN 'customer1' THEN 'customer123'
-        WHEN 'test' THEN 'test123'
-        END as password
+        WHEN 'manager_new' THEN '123456'
+        WHEN 'cashier_new' THEN '123456'
+        WHEN 'customer_new' THEN '123456'
+    END as password
 FROM users
 ORDER BY FIELD(role, 'ADMIN', 'MANAGER', 'CASHIER', 'CUSTOMER'), username;
+
+SELECT
+    '===================================' as '';
+SELECT
+    'IMPORTANT: All passwords are SHA-256 hashed in the database' as security_note;
+SELECT
+    'Database: syos_db is ready for use' as note;
