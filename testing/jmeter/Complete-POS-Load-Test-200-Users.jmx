@@ -459,8 +459,8 @@
 
       </hashTree>
 
-      <!-- Thread Group 3: Reports & Products (40 users - 20% of load) -->
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Reports & Products (40 Users)" enabled="true">
+      <!-- Thread Group 3: Reports and Products (40 users - 20% of load) -->
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Reports and Products (40 Users)" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
