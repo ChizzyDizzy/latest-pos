@@ -31,6 +31,30 @@ pos-web/src/test/java/com/syos/web/controllers/
 
 ---
 
+## 🌐 URL Configuration (IMPORTANT!)
+
+**All tests are now configured with the correct URLs:**
+
+- **Base URL**: `http://localhost:8080`
+- **All paths include**: `/pos-web/` prefix
+
+**Examples**:
+- Login: `http://localhost:8080/pos-web/login` ✅
+- Dashboard: `http://localhost:8080/pos-web/dashboard` ✅
+- Sales: `http://localhost:8080/pos-web/sales/new` ✅
+- Inventory: `http://localhost:8080/pos-web/inventory/` ✅
+
+**JMeter Configuration**:
+- Server: `localhost`
+- Port: `8080`
+- Paths: `/pos-web/login`, `/pos-web/dashboard`, etc.
+
+**Postman Configuration**:
+- Base URL variable: `http://localhost:8080/pos-web`
+- Requests use: `{{baseUrl}}/login`, `{{baseUrl}}/dashboard`, etc.
+
+---
+
 ## ✅ Before Testing
 
 1. **Start your application**:
@@ -54,42 +78,81 @@ pos-web/src/test/java/com/syos/web/controllers/
 
 ## 1️⃣ Unit Tests (JUnit + Mockito)
 
-### Important: Run from the Right Directory!
+### ⭐ EASIEST WAY: Use IntelliJ IDEA (No Maven Command Needed!)
 
-**You MUST be in the `pos-web` folder** (where `pom.xml` is located), not in the test source folder!
+**This is the simplest way to run unit tests - no command line required!**
 
-### Run All Unit Tests
+1. **Open the project in IntelliJ IDEA**
+   - Open IntelliJ IDEA
+   - File → Open
+   - Select the `latest-pos` folder
+   - Wait for IntelliJ to index the project
 
-**Windows (Command Prompt or PowerShell)**:
+2. **Run ALL tests**:
+   - In Project view, navigate to: `pos-web/src/test/java/com/syos/web/controllers`
+   - Right-click on the `controllers` folder
+   - Select **Run 'Tests in 'controllers''**
+   - ✅ All 109 tests will run
+
+3. **Run a SPECIFIC test**:
+   - Navigate to the test file (e.g., `LoginServletTest.java`)
+   - Right-click on the file
+   - Select **Run 'LoginServletTest'**
+   - Or click the green play button (▶) next to the class name
+
+4. **Run a SINGLE test method**:
+   - Open any test file
+   - Click the green play button (▶) next to any `@Test` method
+   - That single test will run
+
+**Expected Output in IntelliJ**:
+- Green checkmarks ✓ for passed tests
+- Total: 109 tests, 0 failures
+
+---
+
+### Alternative: Maven Command Line
+
+**IMPORTANT**: You MUST run from the `pos-web` folder (where `pom.xml` is located)!
+
+**Windows**:
 ```cmd
+REM Navigate to pos-web folder
 cd "C:\Users\chira\Downloads\ccp 2 assignment submission\New folder\latest-pos\pos-web"
+
+REM Verify you're in the right place
+dir pom.xml
+
+REM Run all tests
 mvn clean test
+
+REM Or run specific test
+mvn test -Dtest=LoginServletTest
 ```
 
 **Linux/Mac**:
 ```bash
+# Navigate to pos-web folder
 cd ~/latest-pos/pos-web
+
+# Run all tests
 mvn clean test
-```
 
-### Run Specific Servlet Test
-
-**Windows**:
-```cmd
-cd "C:\Users\chira\Downloads\ccp 2 assignment submission\New folder\latest-pos\pos-web"
+# Or run specific test
 mvn test -Dtest=LoginServletTest
 ```
 
-**Other tests**:
+### All Available Test Files
+
 ```cmd
 mvn test -Dtest=LoginServletTest
-mvn test -Dtest=SalesServletTest
-mvn test -Dtest=ProductsServletTest
-mvn test -Dtest=UsersServletTest
+mvn test -Dtest=LogoutServletTest
 mvn test -Dtest=DashboardServletTest
+mvn test -Dtest=SalesServletTest
 mvn test -Dtest=InventoryServletTest
 mvn test -Dtest=ReportsServletTest
-mvn test -Dtest=LogoutServletTest
+mvn test -Dtest=ProductsServletTest
+mvn test -Dtest=UsersServletTest
 ```
 
 ### Expected Output
@@ -99,25 +162,14 @@ Tests run: 109, Failures: 0, Errors: 0, Skipped: 0
 BUILD SUCCESS
 ```
 
-### Common Error: "No POM in this directory"
+### ❌ Common Error: "No POM in this directory"
 
-**Problem**: You're in the wrong folder
+**Problem**: You're running Maven from the wrong folder
 
-**Solution**:
-1. Open Command Prompt/PowerShell
-2. Navigate to the `pos-web` folder:
-   ```cmd
-   cd "C:\Users\chira\Downloads\ccp 2 assignment submission\New folder\latest-pos\pos-web"
-   ```
-3. Verify you're in the right place:
-   ```cmd
-   dir pom.xml
-   ```
-   (You should see the pom.xml file)
-4. Now run the tests:
-   ```cmd
-   mvn clean test
-   ```
+**Solution**: Use IntelliJ IDEA instead (see above) OR navigate to the correct folder:
+```cmd
+cd "C:\Users\chira\Downloads\ccp 2 assignment submission\New folder\latest-pos\pos-web"
+```
 
 ---
 
