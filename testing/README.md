@@ -54,20 +54,42 @@ pos-web/src/test/java/com/syos/web/controllers/
 
 ## 1️⃣ Unit Tests (JUnit + Mockito)
 
+### Important: Run from the Right Directory!
+
+**You MUST be in the `pos-web` folder** (where `pom.xml` is located), not in the test source folder!
+
 ### Run All Unit Tests
 
+**Windows (Command Prompt or PowerShell)**:
+```cmd
+cd "C:\Users\chira\Downloads\ccp 2 assignment submission\New folder\latest-pos\pos-web"
+mvn clean test
+```
+
+**Linux/Mac**:
 ```bash
-cd pos-web
+cd ~/latest-pos/pos-web
 mvn clean test
 ```
 
 ### Run Specific Servlet Test
 
-```bash
-# Test a specific servlet
+**Windows**:
+```cmd
+cd "C:\Users\chira\Downloads\ccp 2 assignment submission\New folder\latest-pos\pos-web"
+mvn test -Dtest=LoginServletTest
+```
+
+**Other tests**:
+```cmd
 mvn test -Dtest=LoginServletTest
 mvn test -Dtest=SalesServletTest
 mvn test -Dtest=ProductsServletTest
+mvn test -Dtest=UsersServletTest
+mvn test -Dtest=DashboardServletTest
+mvn test -Dtest=InventoryServletTest
+mvn test -Dtest=ReportsServletTest
+mvn test -Dtest=LogoutServletTest
 ```
 
 ### Expected Output
@@ -76,6 +98,26 @@ mvn test -Dtest=ProductsServletTest
 Tests run: 109, Failures: 0, Errors: 0, Skipped: 0
 BUILD SUCCESS
 ```
+
+### Common Error: "No POM in this directory"
+
+**Problem**: You're in the wrong folder
+
+**Solution**:
+1. Open Command Prompt/PowerShell
+2. Navigate to the `pos-web` folder:
+   ```cmd
+   cd "C:\Users\chira\Downloads\ccp 2 assignment submission\New folder\latest-pos\pos-web"
+   ```
+3. Verify you're in the right place:
+   ```cmd
+   dir pom.xml
+   ```
+   (You should see the pom.xml file)
+4. Now run the tests:
+   ```cmd
+   mvn clean test
+   ```
 
 ---
 
